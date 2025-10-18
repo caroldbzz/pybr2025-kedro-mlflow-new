@@ -1,3 +1,4 @@
+ipython
 kagglehub[pandas-datasets]
 plotly
 jupyterlab

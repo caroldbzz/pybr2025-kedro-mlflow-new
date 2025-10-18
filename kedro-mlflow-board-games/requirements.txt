@@ -1,9 +1,8 @@
 pandas
 numpy
+scikit-learn
 kedro
 mlflow
 kedro-mlflow
-ipython
 kedro-datasets
 kedro-viz
-scikit-learn

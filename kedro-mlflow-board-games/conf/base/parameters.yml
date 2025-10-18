@@ -1,8 +1,12 @@
-# conf/base/parameters.yml
-feature_target: average_rating
+feature_target: rating_average
+
+features:
+  - play_time
+  - complexity_average
+
 split:
-test_size: 0.2
-random_state: 42
+  test_size: 0.2
+  random_state: 42
+
 model:
-# Simples e rápido; pode ser trocado por LinearRegression
-type: LinearRegression # ou RandomForestRegressor para stretch goal
+  type: LinearRegression
