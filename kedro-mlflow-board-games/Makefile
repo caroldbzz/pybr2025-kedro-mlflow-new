@@ -57,6 +57,12 @@ kedro: env
 mlflow-ui: env
 	$(CONDA) run -n $(QUOTED_ENV) mlflow ui --backend-store-uri mlruns --port 5000
 
+kedro-mlflow:
+	$(CONDA) run -n $(QUOTED_ENV) kedro mlflow init
+
+package:
+	$(CONDA) run -n $(QUOTED_ENV) kedro package
+
 run: env
 	$(CONDA) run -n $(QUOTED_ENV) kedro run --pipeline $(PIPELINE)
 

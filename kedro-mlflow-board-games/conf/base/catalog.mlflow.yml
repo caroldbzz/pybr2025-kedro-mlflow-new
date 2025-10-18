@@ -1,0 +1,58 @@
+# RAW
+raw_board_games:
+  type: pandas.CSVDataset
+  filepath: data/01_raw/bgg_dataset.csv
+  load_args:
+    encoding: utf-8
+    sep: ";"
+    decimal: ","
+    header: 0
+    engine: python
+    on_bad_lines: warn
+
+# INTERMEDIATE (logado como artifact no MLflow)
+clean_board_games:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataset
+  dataset:
+    type: pandas.ParquetDataset
+    filepath: data/02_intermediate/clean_board_games.parquet
+  artifact_path: data_intermediate
+
+# PRIMARY (splits logados como artifacts)
+X_train:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataset
+  dataset:
+    type: pandas.ParquetDataset
+    filepath: data/03_primary/X_train.parquet
+  artifact_path: data_splits
+
+X_test:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataset
+  dataset:
+    type: pandas.ParquetDataset
+    filepath: data/03_primary/X_test.parquet
+  artifact_path: data_splits
+
+y_train:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataset
+  dataset:
+    type: pandas.ParquetDataset
+    filepath: data/03_primary/y_train.parquet
+  artifact_path: data_splits
+
+y_test:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataset
+  dataset:
+    type: pandas.ParquetDataset
+    filepath: data/03_primary/y_test.parquet
+  artifact_path: data_splits
+
+# MODELS (Model Tracking direto no artifact store)
+regressor:
+  type: kedro_mlflow.io.models.MlflowModelTrackingDataset
+  flavor: mlflow.sklearn
+  artifact_path: model
+
+# REPORTING (métricas com histórico no MLflow)
+metrics:
+  type: kedro_mlflow.io.metrics.MlflowMetricsHistoryDataset

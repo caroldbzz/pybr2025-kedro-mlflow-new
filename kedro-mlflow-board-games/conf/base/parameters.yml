@@ -1,6 +1,8 @@
 feature_target: rating_average
 
 features:
+  - min_players
+  - max_players
   - play_time
   - complexity_average
 

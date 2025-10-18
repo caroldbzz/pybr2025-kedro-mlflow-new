@@ -1,0 +1,45 @@
+# # RAW
+# raw_board_games:
+#   type: pandas.CSVDataset
+#   filepath: data/01_raw/bgg_dataset.csv
+#   load_args:
+#     encoding: utf-8
+#     sep: ";"
+#     decimal: ","
+#     header: 0
+#     engine: python
+#     on_bad_lines: warn
+
+# # INTERMEDIATE
+# clean_board_games:
+#   type: pandas.ParquetDataset
+#   filepath: data/02_intermediate/clean_board_games.parquet
+
+# # PRIMARY
+# X_train:
+#   type: pandas.ParquetDataset
+#   filepath: data/03_primary/X_train.parquet
+
+# X_test:
+#   type: pandas.ParquetDataset
+#   filepath: data/03_primary/X_test.parquet
+
+# y_train:
+#   type: pandas.ParquetDataset
+#   filepath: data/03_primary/y_train.parquet
+
+# y_test:
+#   type: pandas.ParquetDataset
+#   filepath: data/03_primary/y_test.parquet
+
+# # MODELS
+# regressor:
+#   type: pickle.PickleDataset
+#   filepath: data/06_models/regressor.pkl
+
+# # REPORTING
+# metrics:
+#   type: json.JSONDataset
+#   filepath: data/08_reporting/metrics.json
+#   save_args:
+#     indent: 2
