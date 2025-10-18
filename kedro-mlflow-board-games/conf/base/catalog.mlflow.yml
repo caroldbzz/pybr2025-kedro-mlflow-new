@@ -47,6 +47,13 @@ y_test:
     filepath: data/03_primary/y_test.parquet
   artifact_path: data_splits
 
+y_pred:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataset
+  dataset:
+    type: pandas.ParquetDataset
+    filepath: data/07_model_output/y_pred.parquet
+  artifact_path: data_pred
+
 # MODELS (Model Tracking direto no artifact store)
 regressor:
   type: kedro_mlflow.io.models.MlflowModelTrackingDataset
@@ -56,3 +63,10 @@ regressor:
 # REPORTING (métricas com histórico no MLflow)
 metrics:
   type: kedro_mlflow.io.metrics.MlflowMetricsHistoryDataset
+
+# FIXED MODEL (carregado da run e do artifact 'model')
+inference_model:
+  type: kedro_mlflow.io.models.MlflowModelTrackingDataset
+  flavor: mlflow.sklearn
+  run_id: e23062c666034c9593c5cc101a7844f1   # <- seu run_id
+  artifact_path: model                       # <- diretório do artifact

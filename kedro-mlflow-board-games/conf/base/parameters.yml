@@ -1,5 +1,9 @@
 feature_target: rating_average
 
+inference:
+  output_column: prediction
+
+
 features:
   - min_players
   - max_players
