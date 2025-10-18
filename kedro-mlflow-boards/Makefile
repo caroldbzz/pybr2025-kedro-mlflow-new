@@ -2,76 +2,81 @@
 ###################### MAKEFILE #################################
 #################################################################
 
-# Adiciona um marcador para que o make não confunda os alvos com nomes de arquivos
-.PHONY: env install install-dev create-jupyter-kernel kedro-init mlflow-ui pipeline pipelines clean clean-data reset
+.PHONY: env install install-dev create-jupyter-kernel kedro mlflow-ui run \
+        clean clean-data reset conda-remove
 
-# Versão do Python para o ambiente virtual
+# Versão do Python (usaremos no conda create)
 PYTHON_VERSION ?= 3.13
 
-# Nome do ambiente
-ENV_NAME = .venv
+# Nome do ambiente conda
+ENV_NAME ?= kedro-mlflow-boards-py$(PYTHON_VERSION)
+# Versão "cotada" para passar ao conda
+QUOTED_ENV := "$(ENV_NAME)"
+
+# Binário do gerenciador (troque por mamba/micromamba se preferir)
+CONDA ?= conda
 
 # Arquivos de dependências
-REQ_FILE = requirements.txt
-REQ_DEV_FILE = requirements-dev.txt
+REQ_FILE ?= requirements.txt
+REQ_DEV_FILE ?= requirements-dev.txt
 
-# Caminho do ativador do venv (padronizado para 'bin' para maior compatibilidade)
-VENV_ACTIVATE = $(ENV_NAME)/Scripts/activate
-
-# Pipeline rodada
+# Pipeline a ser rodada (Kedro)
 PIPELINE ?= __default__
 
 # --- Regras Principais ---
 
-# Criação do ambiente com uv usando a versão especificada do Python
+# Cria (se não existir) o env conda com Python e instala uv dentro dele
 env:
-	@echo "--- Criando ambiente virtual com Python $(PYTHON_VERSION) ---"
-	uv venv $(ENV_NAME) -p $(PYTHON_VERSION)
+	@echo --- Criando ambiente conda $(QUOTED_ENV) com Python $(PYTHON_VERSION) ---
+	-$(CONDA) create -y -n $(QUOTED_ENV) python=$(PYTHON_VERSION)
+	@echo --- Atualizando pip e instalando uv no ambiente ---
+	$(CONDA) run -n $(QUOTED_ENV) python -m pip install -U pip
+	$(CONDA) run -n $(QUOTED_ENV) python -m pip install -U uv
 
-# Ativar env e instalar requirements
-install:
-	@echo "--- Instalando dependências de produção ---"
-	. $(VENV_ACTIVATE) && uv pip install -r $(REQ_FILE) --pre
+# Instala deps de produção usando uv (dentro do conda env)
+install: env
+	@echo --- Instalando dependências de produção com uv ---
+	$(CONDA) run -n $(QUOTED_ENV) uv pip install -r $(REQ_FILE) --pre
 
-# Ativar env e instalar requirements de desenvolvimento
-install-dev:
-	@echo "--- Instalando dependências de desenvolvimento ---"
-	. $(VENV_ACTIVATE) && uv pip install -r $(REQ_FILE) -r $(REQ_DEV_FILE)
+# Instala deps de produção + desenvolvimento usando uv
+install-dev: env
+	@echo --- Instalando dependências de desenvolvimento com uv ---
+	$(CONDA) run -n $(QUOTED_ENV) uv pip install -r $(REQ_FILE) -r $(REQ_DEV_FILE)
 
-# Criar kernel do Jupyter para o ambiente
-create-jupyter-kernel:
-	@echo "--- Criando kernel do Jupyter ---"
-	python -m ipykernel install --user --name=$(ENV_NAME) --display-name "Python ($(ENV_NAME))"
+# Cria kernel Jupyter apontando para o ambiente conda
+create-jupyter-kernel: env
+	@echo --- Criando kernel do Jupyter ---
+	$(CONDA) run -n $(QUOTED_ENV) python -m ipykernel install --user \
+		--name=$(ENV_NAME) --display-name="Python ($(ENV_NAME))"
 
 # --- Comandos do Projeto ---
 
-# Inicialização do Kedro
-kedro:
-	. $(VENV_ACTIVATE) && kedro new
+kedro: env
+	$(CONDA) run -n $(QUOTED_ENV) kedro new
 
-# Rodar MLflow UI
-mlflow-ui:
-	. $(VENV_ACTIVATE) && mlflow ui --backend-store-uri mlruns --port 5000
+mlflow-ui: env
+	$(CONDA) run -n $(QUOTED_ENV) mlflow ui --backend-store-uri mlruns --port 5000
 
-# Rodar pipeline (por default roda __default__)
-run:
-	. $(VENV_ACTIVATE) && kedro run --pipeline $(PIPELINE)
+run: env
+	$(CONDA) run -n $(QUOTED_ENV) kedro run --pipeline $(PIPELINE)
 
 # --- Limpeza ---
 
-# Limpeza de ambiente virtual e caches
 clean:
-	@echo "--- Limpando cache e ambiente virtual ---"
-	rm -rf $(ENV_NAME) .pytest_cache .kedro_mlflow .ipynb_checkpoints
+	@echo --- Limpando caches e artefatos locais ---
+	rm -rf .pytest_cache .kedro_mlflow .ipynb_checkpoints
 	find . -type d -name "__pycache__" -exec rm -rf {} +
 
-# Limpeza de dados intermediários e outputs
 clean-data:
-	@echo "--- Limpando dados gerados ---"
-	rm -rf data/02_intermediate/* data/03_primary/* data/04_feature/* data/05_model_input/* data/06_models/* data/07_model_output/* data/08_reporting/*
+	@echo --- Limpando dados gerados ---
+	rm -rf data/02_intermediate/* data/03_primary/* data/04_feature/* \
+	       data/05_model_input/* data/06_models/* data/07_model_output/* \
+	       data/08_reporting/*
 
-# Reset total (cuidado!)
 reset: clean clean-data
-	@echo "--- Resetando o projeto (removendo também 'mlruns') ---"
+	@echo --- Resetando o projeto (removendo também 'mlruns') ---
 	rm -rf mlruns
 
+conda-remove:
+	@echo --- Removendo ambiente conda $(QUOTED_ENV) ---
+	$(CONDA) env remove -y -n $(QUOTED_ENV)

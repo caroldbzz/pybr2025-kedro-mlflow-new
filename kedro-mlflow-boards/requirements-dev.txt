@@ -1,4 +1,4 @@
 kagglehub[pandas-datasets]
 plotly
-jupyterlab>=3.0
+jupyterlab
 notebook

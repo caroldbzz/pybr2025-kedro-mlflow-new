@@ -3,5 +3,5 @@ numpy
 kedro
 mlflow
 kedro-mlflow
-ipython>=8.10
-kedro~=1.0.0
+ipython
+kedro
