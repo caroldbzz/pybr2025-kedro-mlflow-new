@@ -1,5 +1,5 @@
-"""kedro_mlflow_boards file for ensuring the package is executable
-as `kedro-mlflow-boards` and `python -m kedro_mlflow_boards`
+"""kedro-mlflow-board-games file for ensuring the package is executable
+as `kedro-mlflow-board-games` and `python -m kedro_mlflow_board_games`
 """
 import sys
 from pathlib import Path

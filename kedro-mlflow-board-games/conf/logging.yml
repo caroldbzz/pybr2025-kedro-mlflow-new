@@ -36,7 +36,7 @@ loggers:
   kedro:
     level: INFO
 
-  kedro_mlflow_boards:
+  kedro_mlflow_board_games:
     level: INFO
 
 root:

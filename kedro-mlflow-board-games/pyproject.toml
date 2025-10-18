@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 requires-python = ">=3.9"
-name = "kedro_mlflow_boards"
+name = "kedro_mlflow_board_games"
 readme = "README.md"
 dynamic = ["version"]
 dependencies = [
@@ -15,7 +15,7 @@ dependencies = [
 ]
 
 [project.scripts]
-"kedro-mlflow-boards" = "kedro_mlflow_boards.__main__:main"
+"kedro-mlflow-board-games" = "kedro_mlflow_board_games.__main__:main"
 
 [project.entry-points."kedro.hooks"]
 
@@ -39,15 +39,15 @@ dev = [
 ]
 
 [tool.setuptools.dynamic]
-version = {attr = "kedro_mlflow_boards.__version__"}
+version = {attr = "kedro_mlflow_board_games.__version__"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
 namespaces = false
 
 [tool.kedro]
-package_name = "kedro_mlflow_boards"
-project_name = "kedro_mlflow_boards"
+package_name = "kedro_mlflow_board_games"
+project_name = "kedro-mlflow-board-games"
 kedro_init_version = "1.0.0"
 tools = "['Linting', 'Testing', 'Custom Logging', 'Documentation', 'Data Structure']"
 example_pipeline = "False"
@@ -56,7 +56,7 @@ source_dir = "src"
 [tool.pytest.ini_options]
 addopts = """
 --cov-report term-missing \
---cov src/kedro_mlflow_boards -ra"""
+--cov src/kedro_mlflow_board_games -ra"""
 
 [tool.coverage.report]
 fail_under = 0
@@ -83,4 +83,4 @@ select = [
 ignore = ["E501"]  # Ruff format takes care of line-too-long
 
 [tool.kedro_telemetry]
-project_id = "e572daf8c09442d8a14190d58d2a9c69"
+project_id = "23562686da4642cdb9dc8e9391e41d02"

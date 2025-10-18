@@ -4,4 +4,6 @@ kedro
 mlflow
 kedro-mlflow
 ipython
-kedro
+kedro-datasets
+kedro-viz
+scikit-learn

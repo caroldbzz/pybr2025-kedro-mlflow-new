@@ -1,0 +1,8 @@
+# conf/base/parameters.yml
+feature_target: average_rating
+split:
+test_size: 0.2
+random_state: 42
+model:
+# Simples e rápido; pode ser trocado por LinearRegression
+type: LinearRegression # ou RandomForestRegressor para stretch goal

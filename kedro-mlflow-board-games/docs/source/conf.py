@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-# kedro_mlflow_boards documentation build
+# kedro_mlflow_board_games documentation build
 # configuration file, created by sphinx-quickstart.
 #
 # This file is execfile()d with the current directory set to its
@@ -19,11 +19,11 @@
 #
 import re
 
-from kedro_mlflow_boards import __version__ as release
+from kedro_mlflow_board_games import __version__ as release
 
 # -- Project information -----------------------------------------------------
 
-project = "kedro_mlflow_boards"
+project = "kedro_mlflow_board_games"
 author = "Kedro"
 
 # The short X.Y version.
@@ -117,7 +117,7 @@ html_show_sourcelink = False
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "kedro_mlflow_boardsdoc"
+htmlhelp_basename = "kedro_mlflow_board_gamesdoc"
 
 # -- Options for LaTeX output ------------------------------------------------
 
@@ -145,8 +145,8 @@ latex_elements = {
 latex_documents = [
     (
         master_doc,
-        "kedro_mlflow_boards.tex",
-        "kedro_mlflow_boards Documentation",
+        "kedro_mlflow_board_games.tex",
+        "kedro_mlflow_board_games Documentation",
         "Kedro",
         "manual",
     )
@@ -159,8 +159,8 @@ latex_documents = [
 man_pages = [
     (
         master_doc,
-        "kedro_mlflow_boards",
-        "kedro_mlflow_boards Documentation",
+        "kedro_mlflow_board_games",
+        "kedro_mlflow_board_games Documentation",
         [author],
         1,
     )
@@ -174,11 +174,11 @@ man_pages = [
 texinfo_documents = [
     (
         master_doc,
-        "kedro_mlflow_boards",
-        "kedro_mlflow_boards Documentation",
+        "kedro_mlflow_board_games",
+        "kedro_mlflow_board_games Documentation",
         author,
-        "kedro_mlflow_boards",
-        "Project kedro_mlflow_boards codebase.",
+        "kedro_mlflow_board_games",
+        "Project kedro_mlflow_board_games codebase.",
         "Data-Science",
     )
 ]
