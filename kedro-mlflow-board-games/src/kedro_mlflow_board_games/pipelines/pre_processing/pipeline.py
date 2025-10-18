@@ -2,11 +2,10 @@ from __future__ import annotations
 
 from kedro.pipeline import Pipeline, node, pipeline
 
-from .nodes import clean_data, split_data, train_regressor, evaluate_model
-
+from .nodes import clean_data, split_data
 
 def create_pipeline(**kwargs) -> Pipeline:
-    """Pipeline: limpeza → split → treino → avaliação."""
+    """Pipeline: limpeza → split dos dados."""
     return pipeline(
         [
             node(
@@ -29,22 +28,6 @@ def create_pipeline(**kwargs) -> Pipeline:
                 ),
                 outputs=["X_train", "X_test", "y_train", "y_test"],
                 name="split_data",
-            ),
-            node(
-                func=train_regressor,
-                inputs=dict(
-                    X_train="X_train",
-                    y_train="y_train",
-                    model_type="params:model.type",
-                ),
-                outputs="regressor",
-                name="train_regressor",
-            ),
-            node(
-                func=evaluate_model,
-                inputs=["regressor", "X_test", "y_test"],
-                outputs="metrics",
-                name="evaluate_model",
-            ),
+            )
         ]
     )

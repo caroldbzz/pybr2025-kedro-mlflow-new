@@ -2,11 +2,7 @@ from __future__ import annotations
 
 from typing import Dict, Sequence, Tuple
 
-import numpy as np
 import pandas as pd
-from sklearn.base import RegressorMixin
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_absolute_error, r2_score
 from sklearn.model_selection import train_test_split
 
 
@@ -28,14 +24,6 @@ def _ensure_columns_exist(df: pd.DataFrame, cols: Sequence[str]) -> None:
             f"Colunas ausentes: {missing}. Verifique nomes após normalização. "
             f"Algumas colunas disponíveis: {preview}..."
         )
-
-
-def _make_model(model_type: str) -> RegressorMixin:
-    """Cria e retorna o estimador de regressão suportado."""
-    if model_type == "LinearRegression":
-        return LinearRegression()
-    raise ValueError(f"model_type '{model_type}' não suportado.")
-
 
 # ========= Nodes (expostos ao Kedro) =========
 
@@ -117,43 +105,3 @@ def split_data(
     y_test = y_test.to_frame(name=target)
 
     return X_train, X_test, y_train, y_test
-
-
-def train_regressor(
-    X_train: pd.DataFrame,
-    y_train: pd.Series,
-    model_type: str = "LinearRegression",
-) -> RegressorMixin:
-    """
-    Treina o regressor especificado em `model_type`.
-    """
-    model = _make_model(model_type)
-    model.fit(X_train, y_train)
-    return model
-
-def evaluate_model(
-    model: RegressorMixin,
-    X_test: pd.DataFrame,
-    y_test: pd.Series | pd.DataFrame,
-) -> Dict[str, dict]:
-    if isinstance(y_test, pd.DataFrame):
-        if y_test.shape[1] != 1:
-            raise ValueError("y_test deve ter exatamente 1 coluna.")
-        y_true = y_test.iloc[:, 0]
-    else:
-        y_true = y_test
-
-    preds = model.predict(X_test)
-
-    metrics = {
-        "MAE": float(mean_absolute_error(y_true, preds)),
-        "R2": float(r2_score(y_true, preds)),
-        "n_test": float(len(y_true)),
-    }
-
-    metrics = {k: float(v) for k, v in metrics.items() if np.isfinite(v)}
-
-    # 🔑 esquema esperado pelo MlflowMetricsHistoryDataset
-    logged = {name: {"value": val, "step": 0} for name, val in metrics.items()}
-
-    return logged
