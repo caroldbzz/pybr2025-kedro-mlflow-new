@@ -1,3 +1,4 @@
+-r requirements.txt
 ipython
 kagglehub[pandas-datasets]
 plotly

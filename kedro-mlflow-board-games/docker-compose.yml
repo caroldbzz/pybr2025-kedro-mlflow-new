@@ -1,0 +1,42 @@
+# docker-compose.yml
+
+services:
+  # 1. MLflow UI Service - Using the official GHCR image
+  mlflow-ui:
+    # --- LATEST VERSION FIX ---
+    # Use the official image from GitHub Container Registry (ghcr.io)
+    # Using a recent version (e.g., v2.22.2). Check GHCR for the absolute latest tag.
+    image: ghcr.io/mlflow/mlflow:v2.22.2
+    # --------------------------
+    
+    ports:
+      - "5000:5000"
+    volumes:
+      # Mount the local 'mlruns' directory to store artifacts
+      - ./data/mlruns:/home/kedro/data/mlruns
+    
+    # Command to start the MLflow server, pointing it to the mounted volume
+    command: >
+      mlflow ui
+      --host 0.0.0.0
+      --backend-store-uri file:/home/kedro/data/mlruns
+    restart: always # Keep the UI running even if it crashes once
+
+  # 2. Kedro Pipeline Service - Runs the pipeline
+  kedro-run:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      # Mount the local 'mlruns' directory so the Kedro run can log to it
+      - ./data/mlruns:/home/kedro/data/mlruns
+      - .:/home/kedro 
+    environment:
+      # This MUST match the tracking URI in conf/local/mlflow.yml
+      - MLFLOW_TRACKING_URI=file:/home/kedro/data/mlruns
+    
+    # This command executes the pipeline and its output (logs) go to STDOUT/STDERR
+    command: ["kedro", "run"]
+    
+    depends_on:
+      - mlflow-ui
